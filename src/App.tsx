@@ -1,111 +1,70 @@
 import React, { useState } from "react";
-import styled, { keyframes } from "styled-components";
-import Circle from "./Circle";
+import { createGlobalStyle } from "styled-components";
+import Router from "./Router";
 
-const Title = styled.div`
-  font-size: 80px;
-  color: ${props => props.theme.textColor};
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-color: ${props => props.theme.bgColor};
-`;
-
-const Btn = styled.button`
-  color: white;
-  background-color: tomato;
-  border: 0;
-  border-radius: 16px;
-`;
-const Input = styled.button.attrs({ required: true })`
-  background-color: tomato;
-`;
-const rotateAnimation = keyframes`
-  0% {
-    transform: rotate(0deg);
-    border-radius: 0px;
+const GlobalStyle = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap');
+  * {
+    box-sizing: border-box;
   }
-  50% {
-    transform: rotate(360deg);
-    border-radius: 100px;
+  html, body, div, span, applet, object, iframe,
+  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+  a, abbr, acronym, address, big, cite, code,
+  del, dfn, em, img, ins, kbd, q, s, samp,
+  small, strike, strong, sub, sup, tt, var,
+  b, u, i, center,
+  dl, dt, dd, ol, ul, li,
+  fieldset, form, label, legend,
+  table, caption, tbody, tfoot, thead, tr, th, td,
+  article, aside, canvas, details, embed, 
+  figure, figcaption, footer, header, hgroup, 
+  menu, nav, output, ruby, section, summary,
+  time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
   }
-  100% {
-    transform: rotate(0deg);
-    border-radius: 0px;
+  /* HTML5 display-role reset for older browsers */
+  article, aside, details, figcaption, figure, 
+  footer, header, hgroup, menu, nav, section {
+    display: block;
   }
-`;
-
-const Emoji = styled.span`
-  color: white;
-`;
-
-const AnimationBox = styled.div`
-  width: 100px;
-  height: 100px;
-  background-color: tomato;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: ${rotateAnimation} 5s linear infinite;
-  ${Emoji} {
-    font-size: 36px;
-    &:hover {
-      font-size: 50px;
-      color: blue;
-      cursor: pointer;
-    }
-    &:active {
-      display: none;
-    }
+  body {
+    line-height: 1;
+    font-family: 'Lato', sans-serif;
+    background-color: ${props => props.theme.bgColor};
+    color: ${props => props.theme.textColor};
+  }
+  ol, ul {
+    list-style: none;
+  }
+  blockquote, q {
+    quotes: none;
+  }
+  blockquote:before, blockquote:after,
+  q:before, q:after {
+    content: '';
+    content: none;
+  }
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
   }
 `;
 
 const App = () => {
-  const [name, setName] = useState("");
-  
-  const onChnage = (event: React.FormEvent<HTMLInputElement>) => {
-    const {
-       currentTarget: { value }
-    } = event;
-    setName(value);
-  }
-  
-  const onSubmit = (event: React.FocusEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    console.log(`Hello ${name}!`)
-  }
-
   return (
-    <Wrapper>
-      <Title>Hello</Title>
-      <Btn>Login</Btn>
-      <Btn as="a" href="https://www.naver.com" target="blank">
-        regist
-      </Btn>
-      <Input />
-      <Input />
-      <AnimationBox>
-        <Emoji>^O^</Emoji>
-      </AnimationBox>
-      <Circle bgColor="teal" borderColor="#FFF" />
-      <Circle bgColor="green" text="send some text" />
-      <form onSubmit={onSubmit}>
-        <input
-          value={name}
-          onChange={onChnage}
-          type="text"
-          placeholder="write your name"
-        />
-        <button>Log in</button>
-      </form>
-    </Wrapper>
+    <>
+      <GlobalStyle />
+      <Router />
+    </>
   );
 }
 
