@@ -1,8 +1,14 @@
+import {
+  useState,
+  useEffect
+} from 'react';
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
-padding: 0px 20px;
+  padding: 0px 20px;
+  max-width: 680px;
+  margin: 0 auto;
 `;
 const Haeder = styled.header`
   height: 10vh;
@@ -18,9 +24,10 @@ const Coin = styled.li`
   border-radius: 15px;
   margin-bottom: 10px;
   a {
+    display: flex;
+    align-items: center;
     padding: 20px;
     transition: color 0.2s ease-in;
-    display: block;
   }
   &:hover {
     a {
@@ -33,53 +40,73 @@ const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
 `;
 
-const coins = [
-  {
-    id: "btc-bitcoin",
-    name: "Bitcoin",
-    symbol: "BTC",
-    rank: 1,
-    is_new: false,
-    is_active: true,
-    type: "coin",
-  },
-  {
-    id: "eth-ethereum",
-    name: "Ethereum",
-    symbol: "ETH",
-    rank: 2,
-    is_new: false,
-    is_active: true,
-    type: "coin",
-  },
-  {
-    id: "hex-hex",
-    name: "HEX",
-    symbol: "HEX",
-    rank: 3,
-    is_new: false,
-    is_active: true,
-    type: "token",
-  },
-]
+const Loader = styled.span`
+  display: block;
+  text-align: center;
+`;
+
+const Img = styled.img`
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+`;
+
+interface CoinInterface {
+    id: string,
+    name: string,
+    symbol: string,
+    rank: number,
+    is_new: boolean,
+    is_active: boolean,
+    type: string,
+}
 
 const Coins = () => {
+  const [coins, setCoins] = useState<CoinInterface[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async() => {
+      const res = await fetch("https://api.coinpaprika.com/v1/coins");
+      const json = await res.json();
+      setCoins(json.slice(0, 100));
+      setLoading(false);
+    })();
+  }, [])
+
   return (
     <Container>
       <Haeder>
         <Title>코인</Title>
       </Haeder>
-      <CoinsList>
       {
-        coins.map((coin) => (
-          <Coin key={coin.id}>
-            <Link to={`/${coin.id}`}>
-              {coin.name} &rarr;
-            </Link>
-          </Coin>
-        ))
+        loading ? (
+          <Loader>
+            Loading...
+          </Loader>
+        )
+        :
+        <CoinsList>
+        {
+          coins.map((coin) => (
+            <Coin key={coin.id}>
+              <Link to={{
+                pathname: `/${coin.id}`,
+                state: {
+                  name: coin.name
+                }
+              }}>
+                <Img
+                  src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLocaleLowerCase()}`}
+                  style={{}}
+                />
+                {coin.name} &rarr;
+              </Link>
+            </Coin>
+          ))
+        }
+        </CoinsList>
       }
-      </CoinsList>
     </Container>
   )
 }
