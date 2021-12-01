@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { fetchCoinHistory, fetchCoinTicker } from "../api";
+import { fetchCoinHistory } from "../api";
 import ApexChart from 'react-apexcharts';
 
 interface IHistoricalData {
@@ -17,11 +17,17 @@ interface IChartProps {
   coinId: string;
 }
 
-const Chart = ( {coinId} :IChartProps ) => {
+const Chart = ({coinId}: IChartProps) => {
   const {
     isLoading,
     data
-  } = useQuery<IHistoricalData[]>(["ohlcv", coinId], () => fetchCoinHistory(coinId));
+  } = useQuery<IHistoricalData[]>(
+    ["ohlcv", coinId],
+    () => fetchCoinHistory(coinId),
+    {
+      refetchInterval: 10000,
+    }
+  );
 
   return (
     <div>
@@ -30,13 +36,14 @@ const Chart = ( {coinId} :IChartProps ) => {
         "Loading chart..."
         :
         <ApexChart
-          type={"line"}
+          type={"candlestick"}
           series={[
             {
-              name: "sales",
-              data: data?.map(price => price.close),
-
-            },
+              data: data?.map(price => ({
+                x: price.time_close,
+                y: [price.open.toFixed(2), price.high.toFixed(2), price.low.toFixed(2), price.close.toFixed(2)]
+              }))
+            }
           ]}
           options={{
             theme: {
@@ -50,32 +57,18 @@ const Chart = ( {coinId} :IChartProps ) => {
               },
               background: "tranparent",
             },
-            grid: { show: false },
-            yaxis: { show: false },
+            yaxis: {
+              labels: {
+                formatter: (value) => value.toFixed(0)
+              }
+            },
             xaxis: {
-              labels: { show: false },
-              axisTicks: { show: false },
-              axisBorder: { show: false },
               type: "datetime",
-              categories: data?.map(price => price.time_close)
             },
             stroke: {
               curve: "smooth",
-              width: 3,
+              width: 2,
             },
-            fill: {
-              type: "gradient",
-              gradient: { gradientToColors: ["#b74aff"], stops: [0, 100] }
-            },
-            colors: ["#37f8a8"],
-            tooltip: {
-              y: {
-                formatter: (value) => `$ ${value.toFixed(2)}`
-              },
-              x: {
-
-              }
-            }
           }}
         />
       }
