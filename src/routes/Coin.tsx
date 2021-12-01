@@ -24,6 +24,7 @@ const Container = styled.div`
   margin: 0 auto;
 `;
 const Haeder = styled.header`
+  position: relative;
   height: 10vh;
   display: flex;
   justify-content: center;
@@ -81,6 +82,13 @@ const Tab = styled.span<{ isActive: boolean }>`
   a {
     display: block;
   }
+`;
+
+const BackButton = styled.div`
+  display: inline-block;
+  position: absolute;
+  left: 0px;
+  font-size: 50px;
 `;
 
 interface Params {
@@ -187,6 +195,11 @@ const Coin = () => {
         <title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</title>
       </Helmet>
       <Haeder>
+        <BackButton>
+          <Link to={"/"}>
+            {"<"}
+          </Link>
+        </BackButton>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
