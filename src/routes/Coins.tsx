@@ -5,10 +5,12 @@ import {
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
 import { Link } from "react-router-dom";
+import { useSetRecoilState } from 'recoil';
 import styled from "styled-components";
 import {
   fetchCoins
 } from '../api';
+import { isDarkAtom } from '../atoms';
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -24,8 +26,9 @@ const Haeder = styled.header`
 const CoinsList = styled.ul`
 `;
 const Coin = styled.li`
-  background-color: #FFF;
-  color: ${(props) => props.theme.bgColor};
+  background-color: transparent;
+  border: 1px solid ${props => props.theme.accentColor};
+  color: ${(props) => props.theme.textColor};
   border-radius: 15px;
   margin-bottom: 10px;
   a {
@@ -67,6 +70,8 @@ interface ICoin {
 }
 
 const Coins = () => {
+  const setrterFn = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setrterFn(current => !current);
   const {
     isLoading,
     data,
@@ -79,6 +84,9 @@ const Coins = () => {
       </Helmet>
       <Haeder>
         <Title>코인</Title>
+        <button onClick={toggleDarkAtom}>
+          Toggle Mode
+        </button>
       </Haeder>
       {
         isLoading ? (
